@@ -1,133 +1,227 @@
 # Complete HSGKK Audio Topology
 
-## Design intent
+## 1. Mixer responsibility
 
-The system deliberately splits responsibility between two mixers according to who needs discrete control:
+### PreSonus StudioLive 16R
+Owns instruments, media return, musician monitor buses, FOH Main and USB recording output to the Windows/OBS workstation.
 
-- X18 owns vocal/speech sources and vocalist IEM mixes.
-- PreSonus owns instruments/media, musician IEM mixes, FOH, and OBS feed.
-- A single curated Band + Media mix crosses from PreSonus to X18.
-- Vocal/speech and MD/PA references cross back from X18 to PreSonus on separate paths.
+### Behringer X Air X18
+Owns vocal/speech microphones, AWL/WL IEM mixes, MD/PA communication mix, and the mono vocal/speech subgroup returned to PreSonus.
 
-This avoids using a PC as an audio-routing bridge and preserves independent monitor control where it matters.
+## 2. PreSonus input map
 
-## X18 inputs
-
-| Ch | Source | Routing intent |
+| Ch | Source | Power / role |
 |---:|---|---|
-| 1 | Shure Wireless 1 — Speaker | Main L; IEM reference as required |
-| 2 | Shure Wireless 2 — WL | Main L; WL/AWL IEMs |
-| 3 | AWL Vox 1 | Main L; vocalist IEMs |
-| 4 | AWL Vox 2 | Main L; vocalist IEMs |
-| 5 | AWL Vox 3 | Main L; vocalist IEMs |
-| 6 | MD Key/Bass/Gtr Mic | Vocalist IEMs + Bus 6 |
-| 7 | PA Mic | Vocalist IEMs + Bus 6 |
-| 8 | PreSonus Bus 3 — Band + Media | Vocalist IEMs ONLY |
-| 9 | Additional Wireless | As required |
-| 10–18 | Reserved | Future |
+| 1 | Reserved | |
+| 2 | Reserved | |
+| 3 | Drum Kick | Drum |
+| 4 | Drum Tom | Drum |
+| 5 | Drum OH | **Phantom-powered mic** |
+| 6 | Drum Snare | Drum |
+| 7 | Guitar 2 | Instrument |
+| 8 | Bass | **Phantom-powered DI box** |
+| 9 | Keyboard | **Phantom-powered DI box** |
+| 10 | Guitar 1 | Instrument |
+| 11 | Drum MD Mic | Musician communication source |
+| 12 | X18 Bus 6 | MD Key/Gtr/Bass + PA communication return |
+| 13 | X18 Main L | Singers/Speaker Vox return |
+| 14 | Reserved | |
+| 15 | Reserved | |
+| 16 | Click | Monitor only; exclude FOH |
+| 17 | Sequencer | |
+| 18 | Reserved | |
 
-## X18 buses
+**Important:** Media playback is not Ch 14–15. It enters the dedicated rear stereo RCA line input.
 
-| Bus | Destination | Function |
-|---:|---|---|
-| 1 | AWL IEM | Shared AWL vocalist monitor mix |
-| 2 | WL IEM | Worship Leader monitor mix |
-| 3 | Reserved | Future |
-| 4 | Reserved | Future |
-| 5 | Reserved | Future |
-| 6 | PreSonus input | MD + PA communication reference for musicians |
+## 3. Media Workstation
 
-## PreSonus buses
+The Windows Media Workstation has two independent connections to the PreSonus.
 
-| Bus | Destination |
-|---:|---|
-| 1 | Drum IEM |
-| 2 | Bass IEM |
-| 3 | X18 Ch 8 — Band + Media for vocalists |
-| 4 | Keyboard IEM |
-| 5 | Guitar 1 IEM |
-| 6 | Guitar 2 wireless IEM |
-
-## PreSonus inputs / source plan
-
-Current source plan discussed for the 16 physical channels:
-
-| Ch | Source |
-|---:|---|
-| 1 | Keyboard |
-| 2 | Acoustic Guitar |
-| 3 | Electric Guitar |
-| 4 | Bass |
-| 5 | Kick |
-| 6 | Snare |
-| 7 | Tom |
-| 8 | Overhead |
-| 9 | Media L |
-| 10 | Media R |
-| 11 | X18 Main L — Vocal/Speech return |
-| 12 | X18 Bus 6 — MD/PA return |
-| 13 | MD Drum Cage Mic |
-| 14 | Sequencer L |
-| 15 | Sequencer R |
-| 16 | Click / Cue |
-
-The physical input plan is operationally useful but should be updated here if cabling changes.
-
-## Two MD microphone design
-
-There are intentionally two MD paths:
-
-1. **MD Drum Cage Mic -> PreSonus Ch 13.** It remains discrete in PreSonus. Each musician decides whether/how much to hear it. Keyboard can keep it off/low because drum-cage bleed can be excessive.
-2. **MD Key/Bass/Gtr Mic -> X18 Ch 6.** It is the cleaner MD source for vocalist IEMs and is included in X18 Bus 6 for musician reference.
-
-Do not automatically put the Drum Cage MD into PreSonus Bus 3. Keeping it out prevents drum-cage bleed from being carried into vocalist IEMs.
-
-## Sequencer
-
-Suggested use of remaining PreSonus channels:
-- Ch 14 — Sequencer L
-- Ch 15 — Sequencer R
-- Ch 16 — Click/Cue
-
-Sequencer L/R may feed FOH and required monitor buses. Click/Cue must remain out of FOH Main and be sent only to musicians who need it.
-
-## OBS
-
-Old arrangement used PreSonus Bus 3 for OBS. Current arrangement:
-- **PreSonus Main L/R -> OBS via USB**
-- Bus 3 is therefore dedicated to Band + Media -> X18.
-
-OBS receives the same core FOH mix rather than consuming a monitor bus.
-
-## Signal-flow summary
-
+### Playback: PC → PreSonus
 ```text
-INSTRUMENTS / MEDIA / SEQUENCER
-            |
-            v
-     PreSonus StudioLive 16R
-       |              |
-       | Bus 3        | Main L/R
-       | Band+Media   +----> PA / FOH
-       v              +----> OBS via USB
-     X18 Ch 8
-       |
-       +----> X18 Bus 1 AWL IEM
-       +----> X18 Bus 2 WL IEM
-       +----> future vocalist buses
-       X NOT Main L
-       X NOT Bus 6
-
-VOCALS / WL / SPEAKER ---> X18 ---> Main L ---> PreSonus ---> FOH
-MD KEY + PA -----------> X18 ---> Bus 6 ----> PreSonus ---> musician buses
-MD DRUM ---------------> PreSonus directly ---> selected musician buses
+Windows PC analog audio OUT
+        -> RCA stereo cable
+        -> PreSonus rear RCA stereo line input
+        -> PreSonus mix
 ```
 
-## Feedback-loop protection
+The StudioLive 16R has a dedicated unbalanced stereo RCA line-input pair. It does not require physical mic/line Ch 14–15.
 
-The highest-risk routing error is allowing the PreSonus return on X18 Ch 8 to return to PreSonus again.
+### Recording: PreSonus → PC
+```text
+PreSonus USB Type-B audio interface
+        -> Windows Media Workstation
+        -> OBS recording
+```
 
-Therefore:
-- Ch 8 -> Main L = OFF.
-- Ch 8 -> Bus 6 = OFF.
-- Any future X18 output returning to PreSonus must explicitly exclude Ch 8 unless a loop-safe design is documented.
+USB is therefore a recording/capture path in the current HSGKK installation; analog RCA is the current media playback path.
+
+## 4. PreSonus buses and monitor distribution
+
+| Bus | Mix | Output destination |
+|---:|---|---|
+| 1 | Drum IEM | Snake A |
+| 2 | Bass IEM | Snake B |
+| 3 | Band mix | X18 Ch 8 |
+| 4 | Keyboard IEM | Snake C |
+| 5 | Guitar 1 IEM | Snake D |
+| 6 | Guitar 2 IEM | M-VAVE wireless IEM |
+
+Bus 3 is not used for OBS. OBS receives audio over the PreSonus USB connection.
+
+## 5. X18 inputs
+
+| Ch | Source | Use |
+|---:|---|---|
+| 1 | Shure Wireless 1 — Speaker | FOH subgroup + IEM reference |
+| 2 | Shure Wireless 2 — WL | FOH subgroup + vocalist IEM |
+| 3 | AWL Vox 1 | FOH subgroup + vocalist IEM |
+| 4 | AWL Vox 2 | FOH subgroup + vocalist IEM |
+| 5 | AWL Vox 3 | FOH subgroup + vocalist IEM |
+| 6 | MD Key/Bass/Gtr | Vocalist IEM + Bus 6 |
+| 7 | PA Mic | Vocalist IEM + Bus 6 |
+| 8 | PreSonus Bus 3 — Band | **Vocalist IEM only** |
+| 9 | Additional Wireless | As required |
+| 10–18 | Reserved | |
+
+## 6. X18 outputs
+
+| Output | Function | Destination |
+|---|---|---|
+| Bus 1 | AWL IEM | M-VAVE wireless IEM |
+| Bus 2 | WL IEM | M-VAVE wireless IEM — old version |
+| Bus 3 | Reserved | |
+| Bus 4 | Reserved | |
+| Bus 5 | Reserved | |
+| Bus 6 | MD/PA communication | PreSonus Ch 12 |
+| Main L | Singers/Speaker Vox subgroup | PreSonus Ch 13 |
+
+## 7. MD communication architecture
+
+Two MD microphone paths are intentionally separate.
+
+### Drum MD
+```text
+Drum-cage MD mic -> PreSonus Ch 11 -> selected musician IEM buses
+```
+
+Because this microphone can carry drum bleed, each musician can decide how much to hear. It does not need to be included in the Band mix sent to vocalists.
+
+### Key/Guitar/Bass MD + PA
+```text
+MD Key/Gtr/Bass mic -> X18 Ch 6 --+
+                                  +-> X18 Bus 6 -> PreSonus Ch 12
+PA mic -------------> X18 Ch 7 --+
+```
+
+This is the clean communication path for musicians and vocalist communication.
+
+## 8. Vocal/speech FOH return
+
+```text
+Speaker / WL / AWL vocal microphones
+        -> X18
+        -> X18 Main L
+        -> PreSonus Ch 13
+        -> PreSonus Main
+        -> crossover / FOH loudspeaker system
+```
+
+The individual vocal balance belongs to X18. PreSonus receives it as one mono subgroup.
+
+## 9. Band reference to vocalists
+
+```text
+PreSonus instruments + required media
+        -> PreSonus Bus 3 Band mix
+        -> X18 Ch 8
+        -> X18 Bus 1 AWL IEM
+        -> X18 Bus 2 WL IEM
+```
+
+**X18 Ch 8 must never be routed to X18 Bus 6 or Main L.** Both return to PreSonus and would create a PreSonus → X18 → PreSonus loop.
+
+## 10. FOH speaker topology
+
+```text
+PreSonus StudioLive Main outputs
+              |
+              v
+           Crossover
+          /         \
+       LOW           MID
+        |             |
+        v             v
+Subwoofer amp      Top speaker amp
+350 W amp             |
+Left channel good     +--> Top/Mid 1
+Right damaged         +--> Top/Mid 2
+        |
+        v
+Single 15" subwoofer
+500 W driver
+```
+
+Current known condition:
+- One 15-inch subwoofer driver in use.
+- Sub driver rating: 500 W.
+- Sub power amplifier: 350 W; only Left channel currently operational; Right channel damaged.
+- Two top/midrange speakers in use.
+- Top speaker amplifier feeds those two speakers.
+- Top/mid speaker wattage is **TBD**.
+- Exact crossover output topology/settings and amplifier/speaker model numbers should be recorded after physical identification.
+
+## 11. Control network
+
+Both mixers use wired Ethernet to the network behind the Huawei router/access point.
+
+```text
+                    Huawei Router / AP
+                           |
+                     Ethernet LAN
+                    /             \
+        PreSonus StudioLive       Behringer X18
+                    \             /
+                     Wi-Fi clients
+                    SSID: HSGKK 2022
+                           |
+        +------------------+------------------+
+        |                  |                  |
+      Laptop          iPhone/iPad         Android
+        |                  |                  |
+ mixer control / personal IEM control applications
+```
+
+Known application families in use include PreSonus control/personal-monitor apps and X18-compatible control apps, including QMix-UC/Mix-Q where applicable. Exact installed app/device mapping and versions should be inventoried before treating app naming as locked.
+
+## 12. Complete signal overview
+
+```text
+MEDIA PC --RCA----------------------> PreSonus
+MEDIA PC <--USB / OBS--------------- PreSonus
+
+DRUMS/GUITARS/BASS/KEY/SEQ --------> PreSonus
+                                      |
+                                      +--> Buses 1/2/4/5 -> Snake A/B/C/D -> musician IEM
+                                      +--> Bus 6 -> M-VAVE -> Guitar 2 IEM
+                                      +--> Bus 3 Band -> X18 Ch 8 -> vocalist IEM
+                                      |
+VOCALS/SPEECH -> X18 -> Main L ------+ Ch 13
+MD/PA --------> X18 -> Bus 6 --------+ Ch 12
+                                      |
+                                      v
+                                 PreSonus Main
+                                      |
+                                  Crossover
+                                  /       \
+                               Sub         Tops
+```
+
+## 13. Safety invariants
+
+1. X18 Ch 8 -> Main L = **OFF**.
+2. X18 Ch 8 -> Bus 6 = **OFF**.
+3. PreSonus Ch 16 Click -> FOH Main = **OFF**.
+4. Phantom power is required on the documented Drum OH, Bass DI and Keyboard DI channels; verify connected equipment before changing phantom-power state.
+5. IEM outputs must start at safe listening levels.
+6. Do not document an unknown top-speaker wattage, crossover frequency or amplifier model by assumption.
