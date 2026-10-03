@@ -144,6 +144,7 @@ PreSonus control uses its supported control/personal-monitor applications (inclu
 ## Detailed documentation
 
 - [Complete physical topology](docs/TOPOLOGY.md)
+- [PreSonus production EQ & compression baseline](docs/PRESONUS-PRODUCTION-EQ.md)
 - [X18 channel processing](docs/X18-PROCESSING.md)
 - [X18 Bus 1 — AWL IEM](docs/X18-BUS-1-AWL-IEM.md)
 - [X18 Bus 2 — WL IEM](docs/X18-BUS-2-WL-IEM.md)
