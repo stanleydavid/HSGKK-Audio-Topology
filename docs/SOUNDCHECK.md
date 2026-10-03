@@ -1,53 +1,72 @@
 # HSGKK Soundcheck & Safety Checklist
 
-## Before powering / unmuting
+## Routing verification
 
-- Confirm X18 Ch 8 is the PreSonus Bus 3 Band + Media feed.
-- Confirm X18 Ch 8 is OFF from X18 Main L.
-- Confirm X18 Ch 8 is OFF from X18 Bus 6.
-- Confirm X18 Bus 6 contains MD Ch 6 and PA Ch 7 only unless a documented change is required.
-- Confirm click/cue is excluded from PreSonus FOH Main.
-- Confirm OBS is receiving PreSonus Main over USB, not Bus 3.
-- Start output/IEM levels safely low.
+- PreSonus Ch 3 Kick, Ch 4 Tom, Ch 5 OH, Ch 6 Snare.
+- Ch 5 Drum OH phantom power as required by the installed mic.
+- Ch 8 Bass DI and Ch 9 Keyboard DI phantom power as required by the installed DI boxes.
+- X18 Bus 6 appears on PreSonus Ch 12.
+- X18 Main L appears on PreSonus Ch 13.
+- Ch 14 and 15 remain reserved.
+- Ch 16 Click is excluded from FOH Main.
+- Ch 17 Sequencer is present.
+- Media workstation analog output reaches the PreSonus rear RCA stereo input.
+- PreSonus USB reaches the Windows Media Workstation and OBS.
 
-## Gain structure
+## PreSonus monitor outputs
 
-1. Establish microphone/instrument preamp gain before changing monitor send values.
-2. Leave enough headroom for louder performance peaks.
-3. Set compressor thresholds from observed gain reduction, not copied threshold numbers.
-4. Verify X18 -> PreSonus returns are not clipping either mixer.
+- Bus 1 Drum -> Snake A.
+- Bus 2 Bass -> Snake B.
+- Bus 3 Band -> X18 Ch 8.
+- Bus 4 Keyboard -> Snake C.
+- Bus 5 Guitar 1 -> Snake D.
+- Bus 6 Guitar 2 -> M-VAVE wireless IEM.
 
-## Vocalist monitors
+## X18 monitor outputs
 
-- Bus 1: AWL IEM; start from documented preset and adjust with actual AWLs.
-- Bus 2: WL IEM; WL self should remain dominant.
-- Ch 8 Band is a single curated Band + Media reference. Vocalists can request more/less Band but cannot independently change individual instruments from X18.
-- MD/PA should remain intelligible without forcing vocalists to run excessive IEM level.
+- Bus 1 AWL -> M-VAVE wireless IEM.
+- Bus 2 WL -> older M-VAVE wireless IEM.
+- Bus 6 MD/PA -> PreSonus Ch 12.
+- Main L Singers/Speaker Vox -> PreSonus Ch 13.
 
-## Musician monitors
+## Loop-protection test
 
-PreSonus:
-- Bus 1 Drum
-- Bus 2 Bass
-- Bus 3 Band + Media -> X18 (not a musician IEM)
-- Bus 4 Keyboard
-- Bus 5 Guitar 1
-- Bus 6 Guitar 2 wireless IEM
+Before raising system level:
+- X18 Ch 8 -> Main L = OFF.
+- X18 Ch 8 -> Bus 6 = OFF.
+- Raising PreSonus Bus 3 should affect vocalist Band reference only.
+- Raising X18 Bus 6 should affect only the PreSonus MD/PA return.
+- Raising X18 Main L should affect only the PreSonus vocal/speech return.
+- Verify no self-sustaining level increase.
 
-The Drum Cage MD is a discrete PreSonus source. Musicians may add it individually. Keyboard may keep it off/low because of drum-cage bleed.
+## FOH loudspeaker path
 
-## Feedback-loop test
+- PreSonus Main feeds crossover.
+- Crossover Low path feeds the operational Left channel of the current sub amplifier.
+- One 15-inch / 500 W subwoofer is currently in use.
+- Sub amplifier Right channel is known damaged and must not be treated as available.
+- Crossover Mid path feeds top-speaker amplifier.
+- Two top/mid speakers are currently in use.
+- Top speaker wattage remains TBD until physically identified.
+- Do not change crossover points/amp gain based on undocumented assumptions.
 
-Before service, temporarily reduce return levels and verify:
-- Raising PreSonus Bus 3 changes X18 Ch 8 / vocalist Band reference only.
-- Raising X18 Main L changes the PreSonus vocal/speech subgroup but does not re-enter X18 Ch 8.
-- Raising X18 Bus 6 changes only the PreSonus MD/PA return.
-- No self-sustaining level increase occurs with stable source input.
+## Network control
 
-## OBS
+- PreSonus Ethernet connected to LAN behind Huawei router/AP.
+- X18 Ethernet connected to same LAN.
+- SSID: HSGKK 2022.
+- Confirm laptop/iOS/iPad/Android control devices can reach their required mixer.
+- Confirm musician personal-mix control works where used.
 
-Verify OBS receives the intended PreSonus FOH Main L/R over USB. Do not repurpose Bus 3 for OBS.
+## Gain / IEM safety
+
+1. Set preamp gain before refining monitor sends.
+2. Preserve headroom for performance peaks.
+3. Set compressor thresholds from actual gain reduction.
+4. Start IEM transmitters/receivers at safe levels.
+5. Verify X18 -> PreSonus return channels do not clip.
+6. Confirm speaker amps/crossover receive clean Main signal before increasing power-amplifier level.
 
 ## Change control
 
-If a routing change is made during rehearsal/service, update the repository afterward if it changes the baseline topology. Temporary performer level changes do not need to become permanent documented values unless adopted as the new baseline.
+Physical routing changes belong in this repository. Performer-specific fader/EQ adjustments do not become locked topology unless deliberately adopted as the new baseline.
