@@ -4,9 +4,9 @@ Current operational source of truth for the HSGKK church audio system.
 
 ## Core architecture
 
-- **PreSonus StudioLive 16R** — instruments, media return, musician IEMs, FOH Main, USB recording interface to OBS.
+- **PreSonus StudioLive 16R** — instruments, dedicated stereo RCA media return, musician IEMs, FOH Main, USB recording interface to OBS.
 - **Behringer X Air X18** — singers/speech, vocalist IEMs, MD/PA communication.
-- **Media Workstation (Windows)** — media playback to PreSonus over analog RCA and OBS recording from PreSonus over USB.
+- **Media Workstation (Windows)** — analog stereo playback to the PreSonus rear RCA input; OBS receives audio from PreSonus over USB.
 - Both mixers are wired by Ethernet into the LAN behind the Huawei router/AP.
 - Wireless control devices join SSID **HSGKK 2022**.
 
@@ -27,22 +27,24 @@ Current operational source of truth for the HSGKK church audio system.
 | 11 | Drum MD Mic | Direct to PreSonus |
 | 12 | X18 Bus 6 | MD Key/Gtr/Bass + PA communication return |
 | 13 | X18 Main L | Singers/Speaker Vox subgroup |
-| 14 | Reserved | Media does NOT use Ch 14–15 |
-| 15 | Reserved | Media does NOT use Ch 14–15 |
+| 14 | Reserved | |
+| 15 | Reserved | |
 | 16 | Click | Keep out of FOH Main |
 | 17 | Sequencer | |
 | 18 | Reserved | |
 
-## PreSonus buses
+**Media is not Ch 14/15.** The Windows workstation feeds the StudioLive 16R's dedicated rear stereo RCA line-input pair.
 
-| Bus | Mix | Physical destination |
-|---:|---|---|
-| 1 | Drum IEM | Snake channel A |
-| 2 | Bass IEM | Snake channel B |
-| 3 | Band mix | X18 Ch 8 |
-| 4 | Keyboard IEM | Snake channel C |
-| 5 | Guitar 1 IEM | Snake channel D |
-| 6 | Guitar 2 IEM | M-VAVE wireless IEM |
+## PreSonus buses / musician IEM
+
+| Bus | Musician / mix | Connection | IEM interface / destination |
+|---:|---|---|---|
+| 1 | Drum IEM | Snake A | Behringer Powerplay PM1 (passive) |
+| 2 | Bass IEM | Snake B | Behringer Powerplay PM1 (passive) |
+| 3 | Band mix | Direct to X18 | X18 Ch 8 — vocalist band reference |
+| 4 | Keyboard IEM | Snake C | Behringer Powerplay P1 (active) |
+| 5 | Guitar 1 IEM | Snake D | Behringer Powerplay PM1 (passive) |
+| 6 | Guitar 2 IEM | Direct | M-VAVE wireless IEM |
 
 ## X18 inputs
 
@@ -59,87 +61,69 @@ Current operational source of truth for the HSGKK church audio system.
 | 9 | Additional Wireless Mic |
 | 10–18 | Reserved |
 
-## X18 buses
+## X18 outputs
 
-| Bus | Mix | Destination |
-|---:|---|---|
-| 1 | AWL IEM | M-VAVE wireless IEM |
-| 2 | WL IEM | M-VAVE wireless IEM — older version |
-| 3 | Reserved | |
-| 4 | Reserved | |
-| 5 | Reserved | |
-| 6 | MD/PA communication | PreSonus Ch 12 |
+| Output | Mix | Destination |
+|---|---|---|
+| Bus 1 | AWL IEM | M-VAVE wireless IEM |
+| Bus 2 | WL IEM | M-VAVE wireless IEM — older version |
+| Bus 3–5 | Reserved | |
+| Bus 6 | MD/PA communication | PreSonus Ch 12 |
+| Main L | Singers/Speaker Vox subgroup | PreSonus Ch 13 |
 
-**X18 Main L → PreSonus Ch 13** carries the Singers/Speaker Vox subgroup.
-
-## Media workstation
-
-Two separate directional connections exist:
+## Media + OBS
 
 ```text
 PLAYBACK
-Windows Media Workstation
-    -> analog audio output
-    -> stereo RCA cable
-    -> PreSonus rear stereo RCA line input
+Windows Media Workstation analog stereo OUT
+        -> stereo RCA cable
+        -> PreSonus dedicated rear stereo RCA line input
 
 RECORDING
-PreSonus USB audio
-    -> Windows Media Workstation
-    -> OBS
+PreSonus USB Type-B audio
+        -> Windows Media Workstation
+        -> OBS
 ```
 
-The rear RCA stereo input is separate from physical input channels 1–16. Therefore Ch 14–15 are not the media inputs.
+These are two independent directional paths. USB is not the current media-playback path.
 
 ## FOH loudspeaker path
 
 ```text
-PreSonus Main outputs
-        |
-        v
-     Crossover
-      /     \
- LOW          MID
-  |            |
-  v            v
-Sub power    Top speaker
-amplifier    power amplifier
-  |            |
-  v            +--> Top/Mid speaker 1
-15" Sub        +--> Top/Mid speaker 2
-500 W
+PreSonus Main L/R
+       |
+       v
+    Crossover
+   /    |     \
+ LOW   MID    HIGH
+  |     |       |
+  |     |       +--> UNUSED / AVAILABLE
+  |     |
+  |     +--> Top speaker power amp
+  |             +--> Top/Mid speaker 1
+  |             +--> Top/Mid speaker 2
+  |
+  +--> Subwoofer power amp (350 W)
+          Left channel operational
+          Right channel damaged / unused
+             |
+             +--> single 15" subwoofer, 500 W
 ```
 
-Current sub amplifier: **350 W amplifier; Left channel operational, Right channel damaged.** Only one 15-inch 500 W subwoofer driver is currently used.
-
-Top/mid speaker wattage: **TBD — identify from equipment.**
+Top-speaker amplifier model/rating, top-speaker wattage and crossover settings remain **TBD**. Do not infer them.
 
 ## Control network
 
-```text
-Huawei Router / AP
-        |
-   Ethernet LAN
-     /       \
-PreSonus     X18
-     \       /
-      HSGKK 2022 Wi-Fi
-          |
- Laptop / iPhone / Android / iPad
-          |
- mixer control + personal monitor apps
-```
-
-PreSonus control uses its supported control/personal-monitor applications (including QMix-UC where applicable). X18 is controlled using the installed X18-compatible control apps. App names/versions on each device should be inventoried separately rather than assumed.
+Both mixers connect by Ethernet to the LAN behind the Huawei router/AP. Laptop, iPhone/iPad and Android control devices use Wi-Fi SSID **HSGKK 2022**.
 
 ## Critical loop protection
 
 - X18 Ch 8 originates from PreSonus Bus 3.
-- **Ch 8 → X18 Main L = OFF.**
-- **Ch 8 → X18 Bus 6 = OFF.**
-- X18 Bus 6 returns to PreSonus Ch 12.
-- X18 Main L returns to PreSonus Ch 13.
-- Click Ch 16 stays out of FOH Main.
+- **X18 Ch 8 -> Main L = OFF.**
+- **X18 Ch 8 -> Bus 6 = OFF.**
+- X18 Bus 6 -> PreSonus Ch 12.
+- X18 Main L -> PreSonus Ch 13.
+- PreSonus Ch 16 Click stays out of FOH Main.
 
 ## Detailed documentation
 
@@ -154,4 +138,4 @@ PreSonus control uses its supported control/personal-monitor applications (inclu
 
 ## Status convention
 
-Physical routing/channel assignments above are the **current locked installation**. Mix levels, EQ and compressor settings in the detailed documents are **starting values** and remain subject to soundcheck.
+Physical routing/channel assignments above are the **current installation**. EQ/compressor values in detailed documents are starting references and remain subject to soundcheck.
