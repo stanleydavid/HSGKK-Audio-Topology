@@ -1,83 +1,70 @@
 # Complete HSGKK Audio Topology
 
-## 1. Mixer responsibility
+## 1. Mixer roles
 
-### PreSonus StudioLive 16R
-Owns instruments, media return, musician monitor buses, FOH Main and USB recording output to the Windows/OBS workstation.
+**Behringer X Air X18:** vocal/speech inputs, vocalist IEMs, MD/PA communication, mono vocal/speech subgroup.
 
-### Behringer X Air X18
-Owns vocal/speech microphones, AWL/WL IEM mixes, MD/PA communication mix, and the mono vocal/speech subgroup returned to PreSonus.
+**PreSonus StudioLive 16R:** instruments, dedicated RCA media input, musician IEM buses, final FOH mix and USB audio to OBS.
 
 ## 2. PreSonus input map
 
-| Ch | Source | Power / role |
+| Ch | Source | Notes |
 |---:|---|---|
-| 1 | Reserved | |
-| 2 | Reserved | |
-| 3 | Drum Kick | Drum |
-| 4 | Drum Tom | Drum |
-| 5 | Drum OH | **Phantom-powered mic** |
-| 6 | Drum Snare | Drum |
-| 7 | Guitar 2 | Instrument |
-| 8 | Bass | **Phantom-powered DI box** |
-| 9 | Keyboard | **Phantom-powered DI box** |
-| 10 | Guitar 1 | Instrument |
-| 11 | Drum MD Mic | Musician communication source |
-| 12 | X18 Bus 6 | MD Key/Gtr/Bass + PA communication return |
-| 13 | X18 Main L | Singers/Speaker Vox return |
-| 14 | Reserved | |
-| 15 | Reserved | |
-| 16 | Click | Monitor only; exclude FOH |
+| 1–2 | Reserved | |
+| 3 | Drum Kick | |
+| 4 | Drum Tom | |
+| 5 | Drum OH | Phantom-powered mic |
+| 6 | Drum Snare | |
+| 7 | Guitar 2 | |
+| 8 | Bass | Phantom-powered DI |
+| 9 | Keyboard | Phantom-powered DI |
+| 10 | Guitar 1 | |
+| 11 | Drum MD Mic | Direct musician communication |
+| 12 | X18 Bus 6 | MD Key/Gtr/Bass + PA return |
+| 13 | X18 Main L | Singers/Speaker Vox subgroup |
+| 14–15 | Reserved | **Not media inputs** |
+| 16 | Click | Exclude FOH Main |
 | 17 | Sequencer | |
 | 18 | Reserved | |
 
-**Important:** Media playback is not Ch 14–15. It enters the dedicated rear stereo RCA line input.
+## 3. Media and OBS paths
 
-## 3. Media Workstation
+The StudioLive 16R has a dedicated unbalanced stereo RCA line-input pair, separate from the 16 mic/line inputs.
 
-The Windows Media Workstation has two independent connections to the PreSonus.
-
-### Playback: PC → PreSonus
 ```text
-Windows PC analog audio OUT
-        -> RCA stereo cable
-        -> PreSonus rear RCA stereo line input
-        -> PreSonus mix
+MEDIA PLAYBACK
+Windows PC analog stereo OUT
+    -> stereo RCA
+    -> PreSonus dedicated rear RCA stereo line input
+
+OBS RECORDING
+PreSonus USB Type-B
+    -> Windows PC
+    -> OBS
 ```
 
-The StudioLive 16R has a dedicated unbalanced stereo RCA line-input pair. It does not require physical mic/line Ch 14–15.
+Do not document RCA playback as Ch 14/15 and do not document USB as the current playback source.
 
-### Recording: PreSonus → PC
-```text
-PreSonus USB Type-B audio interface
-        -> Windows Media Workstation
-        -> OBS recording
-```
+## 4. PreSonus musician monitor buses
 
-USB is therefore a recording/capture path in the current HSGKK installation; analog RCA is the current media playback path.
-
-## 4. PreSonus buses and monitor distribution
-
-| Bus | Mix | Output destination |
-|---:|---|---|
-| 1 | Drum IEM | Snake A |
-| 2 | Bass IEM | Snake B |
-| 3 | Band mix | X18 Ch 8 |
-| 4 | Keyboard IEM | Snake C |
-| 5 | Guitar 1 IEM | Snake D |
-| 6 | Guitar 2 IEM | M-VAVE wireless IEM |
-
-Bus 3 is not used for OBS. OBS receives audio over the PreSonus USB connection.
+| Bus | Mix | Physical path | Performer interface |
+|---:|---|---|---|
+| 1 | Drum IEM | Snake A | Behringer Powerplay PM1 — passive |
+| 2 | Bass IEM | Snake B | Behringer Powerplay PM1 — passive |
+| 3 | Band mix | X18 Ch 8 | Vocalist band reference |
+| 4 | Keyboard IEM | Snake C | Behringer Powerplay P1 — active |
+| 5 | Guitar 1 IEM | Snake D | Behringer Powerplay PM1 — passive |
+| 6 | Guitar 2 IEM | Direct | M-VAVE wireless IEM |
 
 ## 5. X18 inputs
 
 | Ch | Source | Use |
 |---:|---|---|
-| 1 | Shure Wireless 1 — Speaker | FOH subgroup + IEM reference |
-| 2 | Shure Wireless 2 — WL | FOH subgroup + vocalist IEM |
-| 3 | AWL Vox 1 | FOH subgroup + vocalist IEM |
-| 4 | AWL Vox 2 | FOH subgroup + vocalist IEM |
-| 5 | AWL Vox 3 | FOH subgroup + vocalist IEM |
+| 1 | Shure Wireless 1 — Speaker | Main L + reference as required |
+| 2 | Shure Wireless 2 — WL | Main L + vocalist IEM |
+| 3 | AWL Vox 1 | Main L + vocalist IEM |
+| 4 | AWL Vox 2 | Main L + vocalist IEM |
+| 5 | AWL Vox 3 | Main L + vocalist IEM |
 | 6 | MD Key/Bass/Gtr | Vocalist IEM + Bus 6 |
 | 7 | PA Mic | Vocalist IEM + Bus 6 |
 | 8 | PreSonus Bus 3 — Band | **Vocalist IEM only** |
@@ -89,132 +76,116 @@ Bus 3 is not used for OBS. OBS receives audio over the PreSonus USB connection.
 | Output | Function | Destination |
 |---|---|---|
 | Bus 1 | AWL IEM | M-VAVE wireless IEM |
-| Bus 2 | WL IEM | M-VAVE wireless IEM — old version |
-| Bus 3 | Reserved | |
-| Bus 4 | Reserved | |
-| Bus 5 | Reserved | |
+| Bus 2 | WL IEM | M-VAVE wireless IEM — older version |
+| Bus 3–5 | Reserved | |
 | Bus 6 | MD/PA communication | PreSonus Ch 12 |
 | Main L | Singers/Speaker Vox subgroup | PreSonus Ch 13 |
 
-## 7. MD communication architecture
+## 7. Communication paths
 
-Two MD microphone paths are intentionally separate.
-
-### Drum MD
 ```text
-Drum-cage MD mic -> PreSonus Ch 11 -> selected musician IEM buses
-```
+Drum MD mic -> PreSonus Ch 11 -> selected musician IEM buses
 
-Because this microphone can carry drum bleed, each musician can decide how much to hear. It does not need to be included in the Band mix sent to vocalists.
-
-### Key/Guitar/Bass MD + PA
-```text
 MD Key/Gtr/Bass mic -> X18 Ch 6 --+
                                   +-> X18 Bus 6 -> PreSonus Ch 12
 PA mic -------------> X18 Ch 7 --+
 ```
 
-This is the clean communication path for musicians and vocalist communication.
-
 ## 8. Vocal/speech FOH return
 
 ```text
-Speaker / WL / AWL vocal microphones
-        -> X18
-        -> X18 Main L
-        -> PreSonus Ch 13
-        -> PreSonus Main
-        -> crossover / FOH loudspeaker system
+Speaker / WL / AWL vocal mics
+    -> X18
+    -> X18 Main L
+    -> PreSonus Ch 13
+    -> PreSonus Main
 ```
-
-The individual vocal balance belongs to X18. PreSonus receives it as one mono subgroup.
 
 ## 9. Band reference to vocalists
 
 ```text
-PreSonus instruments + required media
-        -> PreSonus Bus 3 Band mix
-        -> X18 Ch 8
-        -> X18 Bus 1 AWL IEM
-        -> X18 Bus 2 WL IEM
+PreSonus band sources
+    -> PreSonus Bus 3
+    -> X18 Ch 8
+    -> X18 Bus 1 AWL IEM / Bus 2 WL IEM
 ```
 
-**X18 Ch 8 must never be routed to X18 Bus 6 or Main L.** Both return to PreSonus and would create a PreSonus → X18 → PreSonus loop.
+**Loop protection:** X18 Ch 8 -> Main L = OFF and X18 Ch 8 -> Bus 6 = OFF.
 
-## 10. FOH speaker topology
+## 10. FOH PA topology
 
 ```text
-PreSonus StudioLive Main outputs
-              |
-              v
-           Crossover
-          /         \
-       LOW           MID
-        |             |
-        v             v
-Subwoofer amp      Top speaker amp
-350 W amp             |
-Left channel good     +--> Top/Mid 1
-Right damaged         +--> Top/Mid 2
-        |
-        v
-Single 15" subwoofer
-500 W driver
+                     PreSonus Main L/R
+                            |
+                            v
+                         CROSSOVER
+                    /         |         \
+                  LOW        MID        HIGH
+                   |          |           |
+                   v          v           +--> UNUSED
+             SUB POWER     TOP POWER           AVAILABLE
+             AMPLIFIER     AMPLIFIER
+               350 W        model/rating TBD
+             /       \          |
+          LEFT      RIGHT        +--> Top/Mid speaker 1 (wattage TBD)
+       operational  damaged      +--> Top/Mid speaker 2 (wattage TBD)
+           |
+           v
+     Single 15" sub
+       500 W driver
 ```
 
-Current known condition:
-- One 15-inch subwoofer driver in use.
-- Sub driver rating: 500 W.
-- Sub power amplifier: 350 W; only Left channel currently operational; Right channel damaged.
-- Two top/midrange speakers in use.
-- Top speaker amplifier feeds those two speakers.
-- Top/mid speaker wattage is **TBD**.
-- Exact crossover output topology/settings and amplifier/speaker model numbers should be recorded after physical identification.
+Confirmed:
+- LOW crossover range is used for the subwoofer.
+- MID crossover range is used for the two top/mid speakers.
+- HIGH crossover range is available but currently **unused**.
+- One 15-inch 500 W subwoofer is in service.
+- Subwoofer amplifier is 350 W; only its Left channel is operational. Right channel is damaged and unused.
+- Top-speaker power amplifier exists, but model/rating is not yet identified.
+- Two top/mid speakers are used; their wattage is not yet identified.
+- Crossover model and crossover-frequency settings are not yet identified.
 
 ## 11. Control network
 
-Both mixers use wired Ethernet to the network behind the Huawei router/access point.
-
 ```text
-                    Huawei Router / AP
-                           |
-                     Ethernet LAN
-                    /             \
-        PreSonus StudioLive       Behringer X18
-                    \             /
-                     Wi-Fi clients
-                    SSID: HSGKK 2022
-                           |
-        +------------------+------------------+
-        |                  |                  |
-      Laptop          iPhone/iPad         Android
-        |                  |                  |
- mixer control / personal IEM control applications
+Huawei Router / AP
+       |
+   Ethernet LAN
+    /        \
+PreSonus     X18
+       |
+Wi-Fi SSID: HSGKK 2022
+       |
+Laptop / iPhone / iPad / Android
 ```
 
-Known application families in use include PreSonus control/personal-monitor apps and X18-compatible control apps, including QMix-UC/Mix-Q where applicable. Exact installed app/device mapping and versions should be inventoried before treating app naming as locked.
+Both mixers are wired by Ethernet. Wireless devices use the same HSGKK 2022 network for the appropriate PreSonus/X18/personal-monitor control apps.
 
 ## 12. Complete signal overview
 
 ```text
-MEDIA PC --RCA----------------------> PreSonus
-MEDIA PC <--USB / OBS--------------- PreSonus
+Windows PC --analog RCA------------------------> PreSonus
+Windows PC <--USB / OBS------------------------- PreSonus
 
-DRUMS/GUITARS/BASS/KEY/SEQ --------> PreSonus
-                                      |
-                                      +--> Buses 1/2/4/5 -> Snake A/B/C/D -> musician IEM
-                                      +--> Bus 6 -> M-VAVE -> Guitar 2 IEM
-                                      +--> Bus 3 Band -> X18 Ch 8 -> vocalist IEM
-                                      |
-VOCALS/SPEECH -> X18 -> Main L ------+ Ch 13
-MD/PA --------> X18 -> Bus 6 --------+ Ch 12
-                                      |
-                                      v
-                                 PreSonus Main
-                                      |
-                                  Crossover
-                                  /       \
-                               Sub         Tops
+Drums / Guitars / Bass / Keyboard / Seq ------> PreSonus
+                                                  |
+       Bus1 -> Snake A -> PM1 -> Drum IEM <------+
+       Bus2 -> Snake B -> PM1 -> Bass IEM <------+
+       Bus4 -> Snake C -> P1  -> Key IEM  <------+
+       Bus5 -> Snake D -> PM1 -> Gtr1 IEM <------+
+       Bus6 -> M-VAVE -> Gtr2 IEM <--------------+
+       Bus3 -> X18 Ch8 -> AWL/WL IEM <-----------+
+                                                  |
+Vocals/Speech -> X18 -> Main L -> PreSonus Ch13 -+
+MD/PA --------> X18 -> Bus6  -> PreSonus Ch12 ---+
+                                                  |
+                                             PreSonus Main L/R
+                                                  |
+                                              Crossover
+                                         /         |         \
+                                      LOW         MID        HIGH
+                                       |           |           |
+                                      Sub        2 Tops       UNUSED
 ```
 
 ## 13. Safety invariants
@@ -222,6 +193,7 @@ MD/PA --------> X18 -> Bus 6 --------+ Ch 12
 1. X18 Ch 8 -> Main L = **OFF**.
 2. X18 Ch 8 -> Bus 6 = **OFF**.
 3. PreSonus Ch 16 Click -> FOH Main = **OFF**.
-4. Phantom power is required on the documented Drum OH, Bass DI and Keyboard DI channels; verify connected equipment before changing phantom-power state.
-5. IEM outputs must start at safe listening levels.
-6. Do not document an unknown top-speaker wattage, crossover frequency or amplifier model by assumption.
+4. Verify connected equipment before changing phantom-power state.
+5. Start IEM levels safely.
+6. Do not use the damaged Right channel of the current sub amplifier.
+7. Do not invent top-speaker wattage, top-amp rating, crossover model or crossover settings.
